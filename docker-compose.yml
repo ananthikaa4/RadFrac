@@ -1,0 +1,26 @@
+# Local / EC2 deployment.
+#   docker compose up -d --build        -> UI :8501, API :8000
+#   docker compose run --rm train       -> re-run boosting training on ../data
+services:
+  radfrac:
+    build: .
+    image: radfrac:latest
+    container_name: radfrac
+    ports:
+      - "8501:8501"
+      - "8000:8000"
+    volumes:
+      - radfrac-runtime:/app/runtime        # SQLite + per-case files survive restarts
+    restart: unless-stopped
+
+  train:
+    image: radfrac:latest
+    profiles: ["train"]
+    user: root
+    volumes:
+      - ../data:/data:ro
+      - ./outputs:/app/outputs
+    command: ["python", "-m", "scripts.train_boosting"]
+
+volumes:
+  radfrac-runtime:

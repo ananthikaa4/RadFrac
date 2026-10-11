@@ -1,0 +1,37 @@
+# RadFrac container dependencies (Linux, Python 3.12, CPU-only).
+# Versions match requirements.txt so pickled/saved models load identically.
+
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.3
+scikit-learn==1.5.2
+scikit-image==0.24.0
+opencv-python-headless==4.10.0.84
+matplotlib==3.9.2
+pillow==10.4.0
+tensorflow-cpu==2.17.1
+keras==3.15.1
+protobuf>=3.20.3,<5
+
+# advanced models / tuning / tracking
+xgboost==3.4.1
+lightgbm==4.7.0
+catboost==1.2.10
+optuna==5.0.0
+mlflow-skinny==2.22.5
+umap-learn==0.5.7
+shap==0.46.0
+pyyaml==6.0.3
+joblib
+
+# application layer
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-multipart==0.0.19
+reportlab==4.2.5
+streamlit==1.39.0
+pyarrow==17.0.0              # newer pyarrow needs NumPy 2; we pin NumPy 1.26 for TF 2.17
+
+# tests
+pytest==8.3.3
+httpx==0.28.1

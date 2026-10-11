@@ -1,0 +1,21 @@
+# Streamlit base theme for RADFRAC.
+#
+# app/theme.py handles the look of everything RADFRAC draws itself. These values
+# set the *base* palette Streamlit uses for widget internals it renders in shadow
+# DOM / portals (select popovers, slider tracks, tooltips, the file-uploader
+# dropzone) which CSS alone cannot reach reliably. Keep them in sync with
+# COLORS in app/theme.py.
+
+[theme]
+base = "light"
+primaryColor = "#0e7490"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f1f6fb"
+textColor = "#0c1b2a"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

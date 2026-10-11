@@ -1,0 +1,25 @@
+.venv/
+venv/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.git/
+.vscode/
+.idea/
+
+# large / private runtime data never goes into the image
+data/
+outputs/cases/
+outputs/radfrac.db
+outputs/features/
+outputs/mlruns/
+outputs/experiments/
+outputs/baselines/
+outputs/duplicate_audit/
+outputs/models/ssl_encoder.keras
+outputs/models/ssl_finetuned.keras
+outputs/models/student.keras
+outputs/models/cnn.keras
+report/
+notebooks/
+*.log

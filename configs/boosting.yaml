@@ -1,0 +1,73 @@
+# RadFrac - gradient-boosting extension (CAT II advanced models)
+#
+# Read by src/boosting_config.py. Every value here can be changed without code
+# edits; the resolved config is logged to MLflow with each run so experiments
+# stay reproducible.
+
+seed: 42
+
+features:
+  # Hybrid representation = hand-crafted HOG + Canny-edge grid (1,780-d, the
+  # same features the existing SVM uses) concatenated with the 1,280-d
+  # global-average-pooled MobileNetV2 embedding taken from the existing
+  # transfer model's frozen ImageNet backbone.
+  use_handcrafted: true
+  use_deep: true
+  cache_dir: outputs/features          # per-split .npz cache
+
+dimensionality_reduction:
+  method: pca                          # StandardScaler -> PCA inside each pipeline
+  # n_components is tuned by Optuna from this list (see search spaces below)
+  whiten: false
+
+tuning:
+  sampler: tpe                         # Bayesian optimisation (Tree-structured Parzen Estimator)
+  objective: val_roc_auc               # maximised on the VALIDATION split
+  early_stopping_rounds: 60
+  n_trials:
+    xgboost: 30
+    lightgbm: 30
+    catboost: 15
+  timeout_sec_per_model: 1800
+
+tracking:
+  mlflow_uri: outputs/mlruns           # local file store (view with: mlflow ui --backend-store-uri outputs/mlruns)
+  experiment: radfrac-boosting
+  csv_log_dir: outputs/experiments     # plain-CSV trial log mirrored alongside MLflow
+
+operating_point:
+  # Same clinical rule as the existing models: minimise FN x5 + FP x1 on the
+  # validation split, subject to FPR <= 0.25.
+  fn_cost: 5.0
+  fp_cost: 1.0
+  max_fpr: 0.25
+
+search_spaces:
+  common:
+    pca_components: [64, 128, 256]
+  xgboost:
+    learning_rate: {low: 0.01, high: 0.3, log: true}
+    max_depth: {low: 3, high: 10}
+    min_child_weight: {low: 1, high: 10}
+    subsample: {low: 0.6, high: 1.0}
+    colsample_bytree: {low: 0.4, high: 1.0}
+    reg_lambda: {low: 0.001, high: 10.0, log: true}
+    reg_alpha: {low: 0.001, high: 10.0, log: true}
+    gamma: {low: 0.0, high: 5.0}
+    max_estimators: 1500
+  lightgbm:
+    learning_rate: {low: 0.01, high: 0.3, log: true}
+    num_leaves: {low: 15, high: 255}
+    min_child_samples: {low: 5, high: 100}
+    feature_fraction: {low: 0.4, high: 1.0}
+    bagging_fraction: {low: 0.6, high: 1.0}
+    lambda_l1: {low: 0.001, high: 10.0, log: true}
+    lambda_l2: {low: 0.001, high: 10.0, log: true}
+    max_estimators: 1500
+  catboost:
+    learning_rate: {low: 0.02, high: 0.3, log: true}
+    depth: {low: 4, high: 8}
+    l2_leaf_reg: {low: 1.0, high: 10.0, log: true}
+    random_strength: {low: 0.0, high: 2.0}
+    bagging_temperature: {low: 0.0, high: 1.0}
+    max_estimators: 1500

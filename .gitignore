@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# RadFrac artifacts / data
+outputs/
+runtime/
+data/raw/
+data/splits/
+data/splits_grouped/
+pip_install.log
+*.log
+
+# Container image exports (regenerate with `docker build`)
+*.tar
+*.tar.gz
+
+# Written project report (large binaries). Kept on disk, never committed -
+# attach to a GitHub Release instead if it needs to be published.
+report/*.docx
+report/*.pdf
+
+# Credentials - never commit these
+.env
+.env.*
+kaggle.json
+*.pem
+*.key
+
+# Node (unrelated tooling that may sit alongside the project)
+node_modules/
+
+# OS / editor / agent tooling
+.DS_Store
+.vscode/
+.idea/
+.claude/
+Thumbs.db
+
+# Office lock files
+~$*
